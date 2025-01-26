@@ -45,67 +45,6 @@ function tarif(id_potion, quantite, prix_potion = 1) {
 
 tarif("potion_soin", 3, 10);
 
-// Fabrication de potion
-
-// function createPotion(id_potion,prix=10,stock=1){
-//     newPotion={id: id_potion,
-//         prix: prix,
-//         stock:stock
-//     };
-//     console.log(`Une nouvelle potion a été ajouté : ${JSON.stringify(newPotion)}`)
-//     return newPotion;
-// }
-
-// createPotion("Philtre de puissance",stock=10);
-
-// Ajout de nouvelles potions dans l'inventaire
-
-function addPotion(inventaire, newPotion) {
-  const existingPotion = inventaire.find(
-    (potion) => potion.id === newPotion.id
-  );
-
-  if (existingPotion) {
-    existingPotion.stock += newPotion.stock;
-  } else {
-    inventaire.push(newPotion);
-  }
-  inventaire.sort((a, b) => b.stock - a.stock);
-  console.log(`Nouveau inventaire: ${JSON.stringify(inventaire)}`);
-}
-
-// addPotion(inventaire,createPotion("philtre_puissance",10,10))
-// addPotion(inventaire,createPotion("potion_soin",10,2))
-
-// Cherche moi les potions qui ...
-
-function stockPotion(inventaire) {
-  let filtredInventory = inventaire.filter((potion) => potion.stock != 0);
-  console.log(
-    `Inventaire filtré (pas de stock=0)${JSON.stringify(filtredInventory)}`
-  );
-  return filtredInventory;
-}
-
-stockPotion(inventaire);
-
-function outOfPotion(inventaire) {
-  let noStock = [];
-  inventaire.forEach((potion) => {
-    if (potion.stock === 0) {
-      noStock.push(potion);
-    }
-  });
-
-  console.log(
-    `Inventaire filtré (rupture de stock uniquement) :${JSON.stringify(
-      noStock
-    )}`
-  );
-}
-
-outOfPotion(inventaire);
-
 console.log(
   `L'inventaire initial n'a pas changé :${JSON.stringify(inventaire)}`
 );
@@ -167,3 +106,39 @@ function laPotionEstFinie(potion) {
   console.log("Fabrication de potion finie :", potion);
   addPotion(inventaire, potion);
 }
+
+// Epreuve ultime, la fabrication de plusieurs inventaires indépendants
+
+function creationInventaire() {
+    const inventaire = [];
+  
+    return {
+        addPotion(newPotion) {
+            const existingPotion = inventaire.find(
+              (potion) => potion.id === newPotion.id
+            );
+          
+            if (existingPotion) {
+              existingPotion.stock += newPotion.stock;
+            } else {
+              inventaire.push(newPotion);
+            }
+            inventaire.sort((a, b) => b.stock - a.stock);
+          },
+      lesPotionsEnStock() {
+            let filtredInventory = inventaire.filter((potion) => potion.stock != 0);
+            return filtredInventory;
+      },
+      lesPotionsEnRuptureDeStock() {
+        let noStock = [];
+        inventaire.forEach((potion) => {
+          if (potion.stock === 0) {
+            noStock.push(potion);
+          }
+        });
+      },
+
+    };
+  }
+const inventaireBoutiquePotionsA = creationInventaire();
+const inventaireBoutiquePotionsB = creationInventaire();
