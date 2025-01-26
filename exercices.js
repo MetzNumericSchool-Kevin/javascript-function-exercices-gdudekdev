@@ -45,3 +45,19 @@ function createPotion(id_potion,prix=10,stock=1){
 }
 
 createPotion("Philtre de puissance",stock=10);
+
+// Ajout de nouvelles potions dans l'inventaire
+
+function addPotion(inventaire,newPotion){
+    const existingPotion = inventaire.find(potion => potion.id === newPotion.id);
+
+    if (existingPotion) {
+        existingPotion.stock += newPotion.stock;
+    } else {
+        inventaire.push(newPotion);
+    }
+    inventaire.sort((a, b) => b.stock - a.stock)
+    console.log(`Nouveau inventaire: ${inventaire}`)
+}
+
+addPotion(inventaire,createPotion("Philtre de puissance",10,10))
