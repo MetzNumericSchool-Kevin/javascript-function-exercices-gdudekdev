@@ -57,7 +57,27 @@ function addPotion(inventaire,newPotion){
         inventaire.push(newPotion);
     }
     inventaire.sort((a, b) => b.stock - a.stock)
-    console.log(`Nouveau inventaire: ${inventaire}`)
+    console.log(`Nouveau inventaire: ${JSON.stringify(inventaire)}`)
 }
 
-addPotion(inventaire,createPotion("Philtre de puissance",10,10))
+addPotion(inventaire,createPotion("philtre_puissance",10,10))
+// addPotion(inventaire,createPotion("potion_soin",10,2))
+
+// Cherche moi les potions qui ...
+
+function stockPotion(inventaire){
+    let filtredInventory= inventaire.filter(potion=>potion.stock!=0);
+    console.log(`${JSON.stringify(filtredInventory)}`);
+    return filtredInventory;
+    
+}
+function outOfPotion(inventaire){
+    let noStock = [];
+    inventaire.forEach(potion => {
+        if (potion.stock === 0) {
+            noStock.push(potion);  
+        }
+    });
+    
+    console.log(JSON.stringify(noStock));
+}
