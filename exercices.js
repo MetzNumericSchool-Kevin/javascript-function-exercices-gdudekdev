@@ -2,10 +2,9 @@
 
 const nom_sorcier = "Archibald 🧙‍♂️";
 const manuel_de_fabrication = {
-  potion_soin: {
-    ingredients: ["eau_de_source", "ecaille_de_dragon", "poudre_de_diamant"],
-    temps_de_fabrication: 3, // exprimé en secondes
-  },
+    "potion_soin": { ingredients: ["herbe", "eau", "poudre magique"], temps_fabrication: 3 },  // Temps en secondes
+    "potion_poison": { ingredients: ["venin", "plante toxique", "eau"], temps_fabrication: 5 },
+    "potion_fortune": { ingredients: ["chance", "or", "eau"], temps_fabrication: 4 }
 };
 const inventaire = [
   {
@@ -35,16 +34,16 @@ tarif("potion_soin",3,10);
 
 // Fabrication de potion
 
-function createPotion(id_potion,prix=10,stock=1){
-    newPotion={id: id_potion,
-        prix: prix,
-        stock:stock
-    };
-    console.log(`Une nouvelle potion a été ajouté : ${JSON.stringify(newPotion)}`)
-    return newPotion;
-}
+// function createPotion(id_potion,prix=10,stock=1){
+//     newPotion={id: id_potion,
+//         prix: prix,
+//         stock:stock
+//     };
+//     console.log(`Une nouvelle potion a été ajouté : ${JSON.stringify(newPotion)}`)
+//     return newPotion;
+// }
 
-createPotion("Philtre de puissance",stock=10);
+// createPotion("Philtre de puissance",stock=10);
 
 // Ajout de nouvelles potions dans l'inventaire
 
@@ -60,17 +59,20 @@ function addPotion(inventaire,newPotion){
     console.log(`Nouveau inventaire: ${JSON.stringify(inventaire)}`)
 }
 
-addPotion(inventaire,createPotion("philtre_puissance",10,10))
+// addPotion(inventaire,createPotion("philtre_puissance",10,10))
 // addPotion(inventaire,createPotion("potion_soin",10,2))
 
 // Cherche moi les potions qui ...
 
 function stockPotion(inventaire){
     let filtredInventory= inventaire.filter(potion=>potion.stock!=0);
-    console.log(`${JSON.stringify(filtredInventory)}`);
+    console.log(`Inventaire filtré (pas de stock=0)${JSON.stringify(filtredInventory)}`);
     return filtredInventory;
-    
 }
+
+stockPotion(inventaire);
+
+
 function outOfPotion(inventaire){
     let noStock = [];
     inventaire.forEach(potion => {
@@ -79,5 +81,58 @@ function outOfPotion(inventaire){
         }
     });
     
-    console.log(JSON.stringify(noStock));
+    console.log(`Inventaire filtré (rupture de stock uniquement) :${JSON.stringify(noStock)}`);
 }
+
+outOfPotion(inventaire);
+
+console.log(`L'inventaire initial n'a pas changé :${JSON.stringify(inventaire)}`)
+
+// Allons faire de la cueillette, nous avons besoin de plus de potions !
+
+
+function createPotion(potion_id,ingredients){
+    let recette=manuel_de_fabrication[potion_id].ingredients;
+
+    if (!recette) {
+        throw new Error(`Aucune recette trouvée pour ${potion_id}`);
+    }
+
+    let missingIngredients = recette.filter(ingredient => !ingredients.includes(ingredient));
+
+    if(missingIngredients.length===0){
+        return potion_id;
+    }else{
+        throw new Error(`Il manque des ingrédients à cette potion: ${missingIngredients.join(', ')}`);
+    }
+}
+
+function testPotionCreation() {
+    // Liste des tests de création de potions
+    const tests = [
+        { potion_id: "potion_soin", ingredients: ["herbe", "eau", "poudre magique"] },
+        { potion_id: "potion_poison", ingredients: ["venin", "plante toxique"] }, 
+        { potion_id: "potion_fortune", ingredients: ["chance", "or"] }, 
+        { potion_id: "potion_poison", ingredients: ["venin", "plante toxique", "eau"] }
+    ];
+
+    // Tester chaque création de potion
+    tests.forEach(test => {
+        try {
+            const resultat_creation_potion = createPotion(test.potion_id, test.ingredients);
+
+            if (resultat_creation_potion instanceof Error) {
+                console.error(resultat_creation_potion.message);
+            } else {
+                console.log(`Potion ${JSON.stringify(resultat_creation_potion.id)} créée avec succès.`);
+                addPotion(inventaire, resultat_creation_potion);
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    });
+
+    // Afficher l'inventaire final
+    console.log("Inventaire final:", JSON.stringify(inventaire, null, 2));
+}
+testPotionCreation();
